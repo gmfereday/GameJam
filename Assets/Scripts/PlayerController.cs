@@ -88,7 +88,13 @@ public class PlayerController : MonoBehaviour
 
         if(_health <= 0)
         {
+            this.enabled = false;
             _animator.SetBool("Death_b", true);
         }
+    }
+
+    public float GetHealth()
+    {
+        return _health;
     }
 }
