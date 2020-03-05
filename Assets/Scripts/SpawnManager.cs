@@ -74,7 +74,6 @@ public class SpawnManager : MonoBehaviour
             spawnLoc.z += zOffset;
 
             GameObject zombie = Instantiate(_zombiePrefabs[0], spawnLoc, Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0));
-            zombie.GetComponent<ZombieController>().SetPlayer(_player);
             _zombies.Add(zombie);
         }
     }

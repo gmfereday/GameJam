@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     private float _runningSpeed = 10.0f;
     [SerializeField]
     private float _walkingSpeed = 5.0f;
+    [SerializeField]
+    private float _health = 100.0f;
 
     private Vector3 _aimDirection;
 
@@ -77,6 +79,16 @@ public class PlayerController : MonoBehaviour
 
     private void HandleWeapon()
     {
-        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_pistolCtrl.HandleFire(_aimDirection));
+        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_pistolCtrl.HandleFire(this.transform.forward));
+    }
+
+    public void TakeDamage(float damage)
+    {
+        _health -= damage;
+
+        if(_health <= 0)
+        {
+            _animator.SetBool("Death_b", true);
+        }
     }
 }

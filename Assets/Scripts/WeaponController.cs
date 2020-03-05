@@ -12,6 +12,8 @@ public class WeaponController : MonoBehaviour
     private float _range = 50.0f;
     [SerializeField]
     private float _impactForce = 100.0f;
+    [SerializeField]
+    private Vector3 _shotLocationOffset;
 
     private float _nextShotTime;
     [SerializeField]
@@ -60,7 +62,7 @@ public class WeaponController : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(this.transform.position, direction, out hit, _range))
+        if (Physics.Raycast(this.transform.parent.position, direction, out hit, _range))
         {
             GameObject effect;
 
@@ -68,7 +70,7 @@ public class WeaponController : MonoBehaviour
             {
                 hit.transform.gameObject.GetComponentInParent<ZombieController>().TakeDamage(_damage);
 
-                hit.rigidbody.AddForce(direction * _impactForce, ForceMode.Impulse);
+                hit.rigidbody.AddForce(-hit.normal * _impactForce, ForceMode.Impulse);
 
                 effect = Instantiate(_bloodSplatter, hit.point, Quaternion.LookRotation(hit.normal));
             }
