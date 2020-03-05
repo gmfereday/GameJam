@@ -9,7 +9,7 @@ public class WeaponController : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.5f;
     [SerializeField]
-    private float _range = 26.0f;
+    private float _range = 50.0f;
     [SerializeField]
     private float _impactForce = 100.0f;
 
