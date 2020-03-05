@@ -9,8 +9,6 @@ public class PlayerController : MonoBehaviour
     private float _runningSpeed = 10.0f;
     [SerializeField]
     private float _walkingSpeed = 5.0f;
-    [SerializeField]
-    private float _rotationSpeed = 450.0f;
 
     private Vector3 _aimDirection;
 
@@ -27,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     private List<GameObject> _weapons;
     private int _currentWeapon = 0;
-    private PistolController _pistolCtrl;
+    private WeaponController _pistolCtrl;
 
     // Start is called before the first frame update
     void Start()
@@ -38,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
         _weapons = new List<GameObject>();
         _weapons.Add(Instantiate(_weaponPrefabs[0], _weaponRoot.transform));
-        _pistolCtrl = _weapons[0].GetComponent<PistolController>();
+        _pistolCtrl = _weapons[0].GetComponent<WeaponController>();
         _pistolCtrl.SetAnimator(_animator);
     }
 
@@ -79,6 +77,6 @@ public class PlayerController : MonoBehaviour
 
     private void HandleWeapon()
     {
-        if (Input.GetKey(KeyCode.Space)) _pistolCtrl.HandleFire(_aimDirection);
+        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_pistolCtrl.HandleFire(_aimDirection));
     }
 }
