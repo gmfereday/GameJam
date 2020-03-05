@@ -6,11 +6,14 @@ public class ZombieController : MonoBehaviour
 {
     [SerializeField]
     private float _health = 100.0f;
+    [SerializeField]
+    private float _deadDespawnRange = 60.0f;
+    [SerializeField]
+    private float _despawnRange = 150.0f;
+
+    private GameObject _player;
 
     private Animator _animator;
-
-    [SerializeField]
-    private CapsuleCollider _hitBox;
 
     // Start is called before the first frame update
     void Start()
@@ -19,10 +22,9 @@ public class ZombieController : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        HandleDespawn();
     }
 
     private void DisableRagdoll()
@@ -34,15 +36,6 @@ public class ZombieController : MonoBehaviour
             rigidBody.isKinematic = true;
             rigidBody.useGravity = false;
         }
-
-        //Collider[] colliders = this.GetComponentsInChildren<Collider>();
-
-        //foreach(Collider collider in colliders)
-        //{
-        //    collider.enabled = false;
-        //}
-
-        //_hitBox.enabled = true;
     }
 
     private void EnableRagdoll()
@@ -56,15 +49,20 @@ public class ZombieController : MonoBehaviour
             rigidBody.isKinematic = false;
             rigidBody.useGravity = true;
         }
+    }
 
-        //Collider[] colliders = this.GetComponentsInChildren<Collider>();
+    private void HandleDespawn()
+    {
+        float dist = Vector3.Distance(this.transform.position, _player.transform.position);
 
-        //foreach (Collider collider in colliders)
-        //{
-        //    collider.enabled = true;
-        //}
+        if (_health <= 0 && dist >= _deadDespawnRange) Destroy(this.gameObject);
 
-        //_hitBox.enabled = false;
+        else if (dist >= _despawnRange) Destroy(this.gameObject);
+    }
+
+    public void SetPlayer(GameObject player)
+    {
+        _player = player;
     }
 
     public void TakeDamage(float damage)
