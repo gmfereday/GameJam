@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private int _maxZombies = 50;
     [SerializeField]
-    private float _spawnRadius = 10.0f;
+    private float _spawnRadius = 20.0f;
     [SerializeField]
     private float _minSpawnDistance = 50.0f;
     private float _maxSpawnDistance = 200.0f;
@@ -30,6 +30,11 @@ public class SpawnManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        
+    }
+
+    private void FixedUpdate()
     {
         CheckForDestroyed();
         HandleSpawning();
@@ -71,7 +76,10 @@ public class SpawnManager : MonoBehaviour
 
             Vector3 spawnLoc = validSpawns[index].transform.position;
             spawnLoc.x += xOffset;
+            spawnLoc.y += 0.5f;
             spawnLoc.z += zOffset;
+
+            if (Physics.CheckBox(spawnLoc, new Vector3(0.25f, 0.5f, 0.25f))) continue;
 
             GameObject zombie = Instantiate(_zombiePrefabs[0], spawnLoc, Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0));
             _zombies.Add(zombie);
