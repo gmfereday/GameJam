@@ -13,7 +13,22 @@ public class WeaponController : MonoBehaviour
     [SerializeField]
     private float _impactForce = 100.0f;
     [SerializeField]
-    private Vector3 _shotLocationOffset;
+    private Transform _shotLocation;
+
+    [SerializeField]
+    private float _idleBodyHorizontal = 0.6f;
+    [SerializeField]
+    private float _idleBodyVertical = 0.0f;
+
+    [SerializeField]
+    private float _walkBodyHorizontal = 0.6f;
+    [SerializeField]
+    private float _walkBodyVertical = 0.0f;
+
+    [SerializeField]
+    private float _runBodyHorizontal = 0.6f;
+    [SerializeField]
+    private float _runBodyVertical = 0.3f;
 
     private float _nextShotTime;
     [SerializeField]
@@ -22,6 +37,10 @@ public class WeaponController : MonoBehaviour
     [SerializeField]
     private GameObject _muzzleFlash;
     private Renderer _flashRenderer;
+    [SerializeField]
+    private Light _flashLight;
+    [SerializeField]
+    private Light _muzzleFlashLight;
 
     [SerializeField]
     private GameObject _bloodSplatter;
@@ -56,17 +75,25 @@ public class WeaponController : MonoBehaviour
 
     public IEnumerator HandleFire(Vector3 direction)
     {
+        //direction = this.transform.forward;
         if (Time.time < _nextShotTime) yield break;
 
         _nextShotTime = Time.time + _fireRate;
 
         _animator.SetBool("Shoot_b", true);
         _flashRenderer.enabled = true;
+        _muzzleFlashLight.enabled = true;
         _gunShot.PlayOneShot(_gunShot.clip, 0.5f);
 
         RaycastHit hit;
 
-        if (Physics.Raycast(this.transform.parent.position, direction, out hit, _range))
+        Vector3 angles = _shotLocation.eulerAngles;
+        angles.x = 0;
+        angles.z = 0;
+
+        _shotLocation.eulerAngles = angles;
+
+        if (Physics.Raycast(_shotLocation.position, _shotLocation.forward, out hit, _range))
         {
             GameObject effect;
 
@@ -88,7 +115,7 @@ public class WeaponController : MonoBehaviour
 
         if (hit.point != null)
         {
-            dist = Vector3.Distance(this.transform.position, hit.point);
+            dist = Vector3.Distance(_shotLocation.position, hit.point);
             Debug.Log(dist);
         }
 
@@ -110,15 +137,34 @@ public class WeaponController : MonoBehaviour
         _lineRenderer.enabled = false;
 
 
-        yield return new WaitForSeconds(_shotAnimTime);
+        yield return new WaitForEndOfFrame();
 
         _animator.SetBool("Shoot_b", false);
         _flashRenderer.enabled = false;
+        _muzzleFlashLight.enabled = false;
     }
 
     public void SetAnimator(Animator animator)
     {
         _animator = animator;
+    }
+
+    public void SetIdleValues()
+    {
+        _animator.SetFloat("Body_Vertical_f", _idleBodyVertical);
+        _animator.SetFloat("Body_Horizontal_f", _idleBodyHorizontal);
+    }
+
+    public void SetWalkValues()
+    {
+        _animator.SetFloat("Body_Vertical_f", _walkBodyVertical);
+        _animator.SetFloat("Body_Horizontal_f", _walkBodyHorizontal);
+    }
+
+    public void SetRunValues()
+    {
+        _animator.SetFloat("Body_Vertical_f", _runBodyVertical);
+        _animator.SetFloat("Body_Horizontal_f", _runBodyHorizontal);
     }
 
     public void SetActive(bool active)
@@ -132,9 +178,13 @@ public class WeaponController : MonoBehaviour
                 renderer.enabled = true;
             }
 
+            _flashLight.enabled = true;
+
+            if(_flashRenderer != null) _flashRenderer.enabled = false;
+            _lineRenderer.enabled = false;
+
             _animator.SetInteger("WeaponType_int", _weaponAnim);
             _animator.SetBool("FullAuto_b", _fullAuto);
-            Debug.Log(_fullAuto);
         }
         else
         {
@@ -143,6 +193,7 @@ public class WeaponController : MonoBehaviour
             {
                 renderer.enabled = false;
             }
+            _flashLight.enabled = false;
         }
     }
 

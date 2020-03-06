@@ -67,8 +67,28 @@ public class PlayerController : MonoBehaviour
 
         Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if(direction != Vector3.zero) _animator.SetFloat("Speed_f", (speed == _walkingSpeed) ? 0.49f : 1.0f);
-        else _animator.SetFloat("Speed_f", 0.0f);
+        if (direction != Vector3.zero)
+        {
+            float setSpeed;
+
+            if (speed == _walkingSpeed)
+            {
+                setSpeed = 0.49f;
+                _weaponCtrl.SetWalkValues();
+            }
+            else
+            {
+                setSpeed = 1.0f;
+                _weaponCtrl.SetRunValues();
+            }
+
+            _animator.SetFloat("Speed_f", setSpeed);
+        }
+        else
+        {
+            _animator.SetFloat("Speed_f", 0.0f);
+            _weaponCtrl.SetIdleValues();
+        }
 
         Vector3 motion = direction;
         motion *= (Mathf.Abs(direction.x) == 1 && Mathf.Abs(direction.z) == 1) ? 0.707f : 1.0f;
