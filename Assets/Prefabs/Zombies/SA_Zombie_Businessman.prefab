@@ -6181,12 +6181,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c707c4bc468ed6f44ad8c4fa9e135bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 100
-  _damage: 10
-  _deadDespawnRange: 60
+  _minHealth: 55
+  _maxHealth: 200
+  _minSpeed: 2
+  _maxSpeed: 8
+  _minDamage: 5
+  _maxDamage: 20
+  _deadDespawnRange: 50
   _despawnRange: 150
   _lookRadius: 15
   _rotationSpeed: 5
+  _attackDelay: 1
 --- !u!195 &195570940181768128
 NavMeshAgent:
   m_ObjectHideFlags: 0

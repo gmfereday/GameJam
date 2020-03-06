@@ -6,9 +6,20 @@ using UnityEngine.AI;
 public class ZombieController : MonoBehaviour
 {
     [SerializeField]
-    private float _health = 100.0f;
+    private float _minHealth = 55.0f;
     [SerializeField]
-    private float _damage = 10.0f;
+    private float _maxHealth = 200.0f;
+    private float _health;
+    [SerializeField]
+    private float _minSpeed = 2.0f;
+    [SerializeField]
+    private float _maxSpeed = 8.0f;
+    private float _speed;
+    [SerializeField]
+    private float _minDamage = 5.0f;
+    [SerializeField]
+    private float _maxDamage = 20.0f;
+    private float _damage;
     [SerializeField]
     private float _deadDespawnRange = 60.0f;
     [SerializeField]
@@ -39,6 +50,12 @@ public class ZombieController : MonoBehaviour
         _player = PlayerManager.instance.player.transform;
         _playerScript = _player.gameObject.GetComponent<PlayerController>();
         _nextAttackTime = Time.time;
+
+        _health = Random.Range(_minHealth, _maxHealth);
+        _speed = Random.Range(_minSpeed, _maxSpeed);
+        _damage = Random.Range(_minDamage, _maxDamage);
+
+        _agent.speed = _speed;
     }
 
     private void Update()
