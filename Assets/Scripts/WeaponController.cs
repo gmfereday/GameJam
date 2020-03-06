@@ -19,20 +19,32 @@ public class WeaponController : MonoBehaviour
     private float _idleBodyHorizontal = 0.6f;
     [SerializeField]
     private float _idleBodyVertical = 0.0f;
+    [SerializeField]
+    private float _idleHeadHorizontal = -0.8f;
+    [SerializeField]
+    private float _idleHeadVertical = 0.0f;
 
     [SerializeField]
     private float _walkBodyHorizontal = 0.6f;
     [SerializeField]
     private float _walkBodyVertical = 0.0f;
+    [SerializeField]
+    private float _walkHeadHorizontal = -0.8f;
+    [SerializeField]
+    private float _walkHeadVertical = 0.0f;
 
     [SerializeField]
     private float _runBodyHorizontal = 0.6f;
     [SerializeField]
     private float _runBodyVertical = 0.3f;
+    [SerializeField]
+    private float _runHeadHorizontal = -0.8f;
+    [SerializeField]
+    private float _runHeadVertical = 0.0f;
 
     private float _nextShotTime;
     [SerializeField]
-    private float _shotAnimTime = 0.17f;
+    private float _shotAnimDelayTime = 0.09f;
 
     [SerializeField]
     private GameObject _muzzleFlash;
@@ -65,6 +77,7 @@ public class WeaponController : MonoBehaviour
         _flashRenderer = _muzzleFlash.GetComponent<Renderer>();
         _flashRenderer.enabled = false;
         _nextShotTime = Time.time;
+        _muzzleFlashLight.enabled = false;
     }
 
     // Update is called once per frame
@@ -73,7 +86,7 @@ public class WeaponController : MonoBehaviour
         
     }
 
-    public IEnumerator HandleFire(Vector3 direction)
+    public IEnumerator Fire(Vector3 direction)
     {
         //direction = this.transform.forward;
         if (Time.time < _nextShotTime) yield break;
@@ -81,6 +94,9 @@ public class WeaponController : MonoBehaviour
         _nextShotTime = Time.time + _fireRate;
 
         _animator.SetBool("Shoot_b", true);
+
+        yield return new WaitForSeconds(_shotAnimDelayTime);
+
         _flashRenderer.enabled = true;
         _muzzleFlashLight.enabled = true;
         _gunShot.PlayOneShot(_gunShot.clip, 0.5f);
@@ -116,14 +132,13 @@ public class WeaponController : MonoBehaviour
         if (hit.point != null)
         {
             dist = Vector3.Distance(_shotLocation.position, hit.point);
-            Debug.Log(dist);
         }
 
         dist = Mathf.Min(_range, dist);
 
         //Max trace length is 1/2 the distance, minimum trace length is 1/5 the distance
         float pos1OffsetDistance = Random.Range(0, dist - dist / 5.0f);
-        Vector3 pos1 = this.transform.position + direction * pos1OffsetDistance;
+        Vector3 pos1 = _shotLocation.position + direction * pos1OffsetDistance;
 
         float remainingDistance = dist - pos1OffsetDistance;
         float pos2OffsetDistance = Random.Range(dist / 5.0f, Mathf.Min(dist / 2.0f, remainingDistance));
@@ -135,13 +150,14 @@ public class WeaponController : MonoBehaviour
         _lineRenderer.enabled = true;
         yield return new WaitForEndOfFrame();
         _lineRenderer.enabled = false;
-
-
-        yield return new WaitForEndOfFrame();
-
-        _animator.SetBool("Shoot_b", false);
+        
         _flashRenderer.enabled = false;
         _muzzleFlashLight.enabled = false;
+    }
+
+    public void CeaseFire()
+    {
+        _animator.SetBool("Shoot_b", false);
     }
 
     public void SetAnimator(Animator animator)
@@ -153,18 +169,24 @@ public class WeaponController : MonoBehaviour
     {
         _animator.SetFloat("Body_Vertical_f", _idleBodyVertical);
         _animator.SetFloat("Body_Horizontal_f", _idleBodyHorizontal);
+        _animator.SetFloat("Head_Horizontal_f", _idleHeadHorizontal);
+        _animator.SetFloat("Head_Vertical_f", _idleHeadVertical);
     }
 
     public void SetWalkValues()
     {
         _animator.SetFloat("Body_Vertical_f", _walkBodyVertical);
         _animator.SetFloat("Body_Horizontal_f", _walkBodyHorizontal);
+        _animator.SetFloat("Head_Horizontal_f", _walkHeadHorizontal);
+        _animator.SetFloat("Head_Vertical_f", _walkHeadVertical);
     }
 
     public void SetRunValues()
     {
         _animator.SetFloat("Body_Vertical_f", _runBodyVertical);
         _animator.SetFloat("Body_Horizontal_f", _runBodyHorizontal);
+        _animator.SetFloat("Head_Horizontal_f", _runHeadHorizontal);
+        _animator.SetFloat("Head_Vertical_f", _runHeadVertical);
     }
 
     public void SetActive(bool active)
@@ -194,14 +216,7 @@ public class WeaponController : MonoBehaviour
                 renderer.enabled = false;
             }
             _flashLight.enabled = false;
+            _muzzleFlashLight.enabled = false;
         }
-    }
-
-    IEnumerator EndShot()
-    {
-        yield return new WaitForSeconds(_shotAnimTime);
-
-        _animator.SetBool("Shoot_b", false);
-        _flashRenderer.enabled = false;
-    }
+    }    
 }

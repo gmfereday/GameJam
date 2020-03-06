@@ -110,7 +110,9 @@ public class PlayerController : MonoBehaviour
 
     private void HandleWeapon()
     {
-        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_weaponCtrl.HandleFire(this.transform.forward));
+        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_weaponCtrl.Fire(this.transform.forward));
+
+        else if (Input.GetKeyUp(KeyCode.Space)) _weaponCtrl.CeaseFire();
     }
 
     private void HandleWeaponSwitch()

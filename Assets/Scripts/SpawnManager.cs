@@ -82,7 +82,7 @@ public class SpawnManager : MonoBehaviour
 
             if (Physics.CheckBox(spawnLoc, new Vector3(0.25f, 0.5f, 0.25f))) continue;
 
-            GameObject zombie = Instantiate(_zombiePrefabs[0], spawnLoc, Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0));
+            GameObject zombie = Instantiate(_zombiePrefabs[Random.Range(0, _zombiePrefabs.Length)], spawnLoc, Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0));
             _zombies.Add(zombie);
         }
     }
