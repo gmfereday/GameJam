@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damage: 50
   _fireRate: 0.5
-  _range: 50
+  _range: 30
   _impactForce: 100
   _shotLocationOffset: {x: 0, y: -0.5, z: 0}
   _shotAnimTime: 0.1
@@ -404,6 +404,7 @@ MonoBehaviour:
   _bloodSplatter: {fileID: 194062, guid: bb954c7832c9a9845b017b284d33fbc8, type: 3}
   _impactSpark: {fileID: 194062, guid: f3b875e35e1ebf043a5f4e03a63b0b7a, type: 3}
   _gunShot: {fileID: 82313318778815940}
+  _weaponAnim: 1
   _lineRenderer: {fileID: 5215330253993496879}
 --- !u!82 &82313318778815940
 AudioSource:

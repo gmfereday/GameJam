@@ -31,6 +31,10 @@ public class WeaponController : MonoBehaviour
     [SerializeField]
     private AudioSource _gunShot;
 
+    [SerializeField]
+    private int _weaponAnim = 1;
+    [SerializeField]
+    private bool _fullAuto = false;
     private Animator _animator;
 
     [SerializeField]
@@ -115,6 +119,31 @@ public class WeaponController : MonoBehaviour
     public void SetAnimator(Animator animator)
     {
         _animator = animator;
+    }
+
+    public void SetActive(bool active)
+    {
+        if (active)
+        {
+            this.enabled = true;
+            
+            foreach(Renderer renderer in this.GetComponentsInChildren<Renderer>())
+            {
+                renderer.enabled = true;
+            }
+
+            _animator.SetInteger("WeaponType_int", _weaponAnim);
+            _animator.SetBool("FullAuto_b", _fullAuto);
+            Debug.Log(_fullAuto);
+        }
+        else
+        {
+            this.enabled = false;
+            foreach (Renderer renderer in this.GetComponentsInChildren<Renderer>())
+            {
+                renderer.enabled = false;
+            }
+        }
     }
 
     IEnumerator EndShot()

@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private List<GameObject> _weapons;
     private int _currentWeapon = 0;
-    private WeaponController _pistolCtrl;
+    private WeaponController _weaponCtrl;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +38,18 @@ public class PlayerController : MonoBehaviour
 
         _weapons = new List<GameObject>();
         _weapons.Add(Instantiate(_weaponPrefabs[0], _weaponRoot.transform));
-        _pistolCtrl = _weapons[0].GetComponent<WeaponController>();
-        _pistolCtrl.SetAnimator(_animator);
+        _weapons.Add(Instantiate(_weaponPrefabs[1], _weaponRoot.transform));
+
+        foreach(GameObject weapon in _weapons)
+        {
+            WeaponController ctrl = weapon.GetComponent<WeaponController>();
+            ctrl.SetAnimator(_animator);
+            Debug.Log("SetActive");
+            ctrl.SetActive(false);
+        }
+
+        _weaponCtrl = _weapons[0].GetComponent<WeaponController>();
+        _weaponCtrl.SetActive(true);
     }
 
     // Update is called once per frame
@@ -47,6 +57,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleWeapon();
+        HandleWeaponSwitch();
     }
 
     private void HandleMovement()
@@ -79,7 +90,19 @@ public class PlayerController : MonoBehaviour
 
     private void HandleWeapon()
     {
-        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_pistolCtrl.HandleFire(this.transform.forward));
+        if (Input.GetKey(KeyCode.Space)) StartCoroutine(_weaponCtrl.HandleFire(this.transform.forward));
+    }
+
+    private void HandleWeaponSwitch()
+    {
+        if(Input.GetKeyDown(KeyCode.F))
+        {
+            _weaponCtrl.SetActive(false);
+
+            _currentWeapon = (_currentWeapon + 1) % _weapons.Count;
+            _weaponCtrl = _weapons[_currentWeapon].GetComponent<WeaponController>();
+            _weaponCtrl.SetActive(true);
+        }
     }
 
     public void TakeDamage(float damage)

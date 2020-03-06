@@ -10,6 +10,7 @@ public class SpawnManager : MonoBehaviour
     private float _spawnRadius = 20.0f;
     [SerializeField]
     private float _minSpawnDistance = 50.0f;
+    [SerializeField]
     private float _maxSpawnDistance = 200.0f;
 
     [SerializeField]
