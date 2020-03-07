@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -11,6 +12,9 @@ public class PlayerController : MonoBehaviour
     private float _walkingSpeed = 5.0f;
     [SerializeField]
     private float _health = 100.0f;
+
+    [SerializeField]
+    private GameObject _deathTextUI;
 
     private Vector3 _aimDirection;
 
@@ -28,6 +32,8 @@ public class PlayerController : MonoBehaviour
     private List<GameObject> _weapons;
     private int _currentWeapon = 0;
     private WeaponController _weaponCtrl;
+
+    private bool _isDead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
         _weaponCtrl = _weapons[0].GetComponent<WeaponController>();
         _weaponCtrl.SetActive(true);
+        _deathTextUI.GetComponent<Text>().enabled = false;
     }
 
     // Update is called once per frame
@@ -127,19 +134,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public IEnumerator TakeDamage(float damage)
     {
         _health -= damage;
 
         if(_health <= 0)
         {
+            _deathTextUI.GetComponent<Text>().enabled = true;
             this.enabled = false;
             _animator.SetBool("Death_b", true);
+
+            yield return new WaitForSeconds(5.0f);
+
+            _isDead = true;
         }
+
+        yield break;
     }
 
     public float GetHealth()
     {
         return _health;
+    }
+
+    public bool IsDead()
+    {
+        return _isDead;
     }
 }
