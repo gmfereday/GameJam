@@ -23,10 +23,15 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _player;
 
+    [SerializeField]
+    private GameObject _scoreUI;
+
+    private ScoreController _scoreCtrl;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        _scoreCtrl = _scoreUI.GetComponent<ScoreController>();
     }
 
     // Update is called once per frame
@@ -46,7 +51,10 @@ public class SpawnManager : MonoBehaviour
         GameObject[] zombies = _zombies.ToArray();
         foreach(GameObject zombie in zombies)
         {
-            if (zombie == null) _zombies.Remove(zombie);
+            if (zombie == null)
+            {
+                _zombies.Remove(zombie);
+            }
         }
     }
 
@@ -83,6 +91,7 @@ public class SpawnManager : MonoBehaviour
             if (Physics.CheckBox(spawnLoc, new Vector3(0.25f, 0.5f, 0.25f))) continue;
 
             GameObject zombie = Instantiate(_zombiePrefabs[Random.Range(0, _zombiePrefabs.Length)], spawnLoc, Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0));
+            zombie.GetComponent<ZombieController>().SetScoreController(_scoreCtrl);
             _zombies.Add(zombie);
         }
     }
